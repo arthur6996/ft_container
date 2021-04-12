@@ -6,7 +6,7 @@
 /*   By: abourbou <abourbou@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/08 17:37:15 by abourbou          #+#    #+#             */
-/*   Updated: 2021/04/12 13:30:13 by abourbou         ###   ########lyon.fr   */
+/*   Updated: 2021/04/12 13:59:41 by abourbou         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,35 @@ namespace ft
 			typedef vector::value_type	value_type;
 			typedef vector::pointer		pointer;
 			typedef vector::reference	reference;
-
+			//
+			vector_iterator(void) : _ptr(0)
+			{}
 			vector_iterator(pointer ptr) : _ptr(ptr)
 			{}
+			vector_iterator&	operator=(vector_iterator& rhs)
+			{
+				_ptr = rhs._ptr;
+				return (*this);
+			}
+			//
+			bool		operator==(vector_iterator other) const
+			{
+				return (_ptr == other._ptr);
+			}
+			bool		operator!=(vector_iterator other) const
+			{
+				return (_ptr != other._ptr);
+			}
+			//
+			reference	operator*(void) const
+			{
+				return (*_ptr);
+			}
+			reference	operator->(void)
+			{
+				return (_ptr);
+			}
+			//
 			vector_iterator&	operator++(void)
 			{
 				_ptr++;
@@ -52,30 +78,20 @@ namespace ft
 				_ptr--;
 				return (save)
 			}
+			//
+				arithmetie ( a + b ou a - b)
+			//
+				comparaison (a < b ou a > b ou a <= b...)
+			//
+				add ou sub (a += b ou a -= b)
+			//
 			reference	operator[](int index) const
 			{
 				return (*(_ptr + index))
 			}
-			reference	operator->(void) const
-			{
-				return (_ptr);
-			}
-			reference	operator*(void) const
-			{
-				return (*_ptr);
-			}
-			bool		operator==(vector_iterator other) const
-			{
-				return (_ptr == other._ptr);
-			}
-			bool		operator!=(vector_iterator other) const
-			{
-				return (_ptr != other._ptr);
-			}
 
-	private:
-		pointer	_ptr;
-
+		private:
+			pointer	_ptr;
 	};
 
 	template <typename T>
