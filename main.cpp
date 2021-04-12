@@ -6,31 +6,20 @@
 /*   By: abourbou <abourbou@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/25 11:15:03 by abourbou          #+#    #+#             */
-/*   Updated: 2021/03/25 12:05:04 by abourbou         ###   ########lyon.fr   */
+/*   Updated: 2021/04/12 11:20:09 by abourbou         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
 #include <list>
+#include <vector>
 #include <iterator>
-
-template <typename T>
-static void showlist(std::list<T> l)
-{
-	typename std::list<T>::iterator it;
-	for (it = l.begin(); it != l.end(); ++it)
-		std::cout << "  " << *it;
-	std::cout << std::endl;
-}
 
 int		main(void)
 {
-	std::list<int> i_list;
+	std::vector<int> vect(4);
 
-	i_list.push_back(1);
-	i_list.push_back(2);
-	i_list.push_front(3);
-	showlist<int>(i_list);
-
+	std::vector<int>::value_type i = 4;
+	std::cout << i << std::endl;
 	return (0);
-};
+}
