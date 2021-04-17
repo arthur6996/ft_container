@@ -6,7 +6,7 @@
 /*   By: abourbou <abourbou@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/08 17:37:15 by abourbou          #+#    #+#             */
-/*   Updated: 2021/04/17 15:58:47 by abourbou         ###   ########lyon.fr   */
+/*   Updated: 2021/04/17 16:23:08 by abourbou         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,11 +188,25 @@ namespace ft
 					std::cerr << e.what() << std::endl;
 				}
 			}
-			/*
 			vector(iterator first, iterator last)
 			{
-				
-			}*/
+				_size = last - first;
+				_alloc_size = _size;
+				try
+				{
+					_data = alloc.allocate(_alloc_size);
+					int i = 0;
+					for (first; first != last; ++first)
+					{
+						_data[i] = *first;
+						i++;
+					}
+				}
+				catch(const std::exception& e)
+				{
+					std::cerr << e.what() << '\n';
+				}
+			}
 			vector(const vector& x);
 
 			//iterator

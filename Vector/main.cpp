@@ -6,7 +6,7 @@
 /*   By: abourbou <abourbou@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/17 13:14:00 by abourbou          #+#    #+#             */
-/*   Updated: 2021/04/17 15:59:30 by abourbou         ###   ########lyon.fr   */
+/*   Updated: 2021/04/17 16:29:52 by abourbou         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,13 @@ int		main(void)
 	}
 
 	//MY VECTOR
-	ft::vector<int>	my_vect(4, 3);
+	//ft::vector<int>	my_vect(tvect.begin(), tvect.end());
+	ft::vector<int>		my_vect(4, 3);
 
+	ft::vector<int>::iterator iter = my_vect.begin();
+	std::cout << *(iter += 2);
+	*iter = 6;
+	std::cout << std::endl;
 	for (ft::vector<int>::iterator it = my_vect.begin(); it != my_vect.end(); ++it)
 	{
 		std::cout << *it << " ";
