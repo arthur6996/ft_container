@@ -6,7 +6,7 @@
 /*   By: abourbou <abourbou@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/08 17:37:15 by abourbou          #+#    #+#             */
-/*   Updated: 2021/04/17 16:23:08 by abourbou         ###   ########lyon.fr   */
+/*   Updated: 2021/04/29 17:20:02 by abourbou         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,18 @@ namespace ft
 	{
 
 		public:
-			typedef typename vector::value_type	value_type;
+			typedef typename vector::value_type		value_type;
+			typedef typename vector::difference_type difference_type;
 			typedef typename vector::pointer		pointer;
-			typedef typename vector::reference	reference;
+			typedef typename vector::reference		reference;
 			//
 			vector_iterator(void) : _ptr(0)
 			{}
-			vector_iterator(pointer ptr) : _ptr(ptr)
+			vector_iterator(const vector_iterator &rhs) : _ptr(rhs._ptr)
+			{}
+			vector_iterator(pointer c_ptr) : _ptr(c_ptr)
+			{}
+			~vector_iterator(void)
 			{}
 			vector_iterator&	operator=(vector_iterator& rhs)
 			{
@@ -65,7 +70,7 @@ namespace ft
 				_ptr++;
 				return (*this);
 			}
-			vector_iterator&	operator++(int)
+			vector_iterator		operator++(int)
 			{
 				vector_iterator save = *this;
 				_ptr++;
@@ -76,22 +81,20 @@ namespace ft
 				_ptr--;
 				return (*this);
 			}
-			vector_iterator&	operator--(int)
+			vector_iterator		operator--(int)
 			{
 				vector_iterator save = *this;
 				_ptr--;
 				return (save);
 			}
 			//
-			vector_iterator&	operator+(int i)
+			vector_iterator		operator+(difference_type i) const
 			{
-				_ptr += i;
-				return (*this);
+				return (vector_iterator(_ptr + i));
 			}
-			vector_iterator&	operator-(int i)
+			vector_iterator		operator-(difference_type i) const
 			{
-				_ptr -= i;
-				return (*this);
+				return (vector_iterator(_ptr - i));
 			}
 			//
 			bool			operator<(vector_iterator& rhs) const
@@ -111,23 +114,88 @@ namespace ft
 				return (_ptr >= rhs._ptr);
 			}
 			//
-			vector_iterator&	operator+=(int i)
+			vector_iterator&	operator+=(difference_type i)
 			{
 				_ptr += i;
 				return(*this);
-			}vector_iterator&	operator-=(int i)
+			}
+			vector_iterator&	operator-=(difference_type i)
 			{
 				_ptr -= i;
 				return(*this);
 			}
 			//
-			reference	operator[](int index) const
+			reference	operator[](difference_type index) const
 			{
 				return (*(_ptr + index));
 			}
 
-		private:
+		protected:
 			pointer	_ptr;
+	};
+
+template <typename vector>
+	class reverse_vector_iterator : public vector_iterator<vector>
+	{
+		public:
+			typedef vector_iterator<vector>				vector_iterator;
+			typedef typename vector::value_type			value_type;
+			typedef typename vector::pointer			pointer;
+			typedef typename vector::difference_type	difference_type;
+			typedef typename vector::reference			reference;
+			//
+			reverse_vector_iterator(void) : vector_iterator(0)
+			{}
+			reverse_vector_iterator(const reverse_vector_iterator &rhs) : vector_iterator(rhs._ptr)
+			{}
+			reverse_vector_iterator(pointer c_ptr) : vector_iterator(c_ptr)
+			{}
+			~reverse_vector_iterator(void)
+			{}
+			reverse_vector_iterator &operator++(void)
+			{
+				this->_ptr--;
+				return (*this);
+			}
+			reverse_vector_iterator operator++(int)
+			{
+				reverse_vector_iterator save(*this);
+				this->_ptr--;
+				return (save);
+			}
+			reverse_vector_iterator &operator--(void)
+			{
+				this->_ptr++;
+				return (*this);
+			}
+			reverse_vector_iterator operator--(int)
+			{
+				reverse_vector_iterator save(*this);
+				this->_ptr++;
+				return (save);
+			}
+			reverse_vector_iterator operator+(difference_type i) const
+			{
+				return (reverse_vector_iterator(this->_ptr - i));
+			}
+			reverse_vector_iterator operator-(difference_type i) const
+			{
+				return (reverse_vector_iterator(this->_ptr + i));
+			}
+			reverse_vector_iterator &operator+=(difference_type i)
+			{
+				this->_ptr -= i;
+				return (*this);
+			}
+			reverse_vector_iterator &operator-=(difference_type i)
+			{
+				this->_ptr += i;
+				return (*this);
+			}
+			reverse_vector_iterator &operator[](difference_type i) const
+			{
+				return (*(this->_ptr - i));
+			}
 	};
 
 	template <typename T>
@@ -141,10 +209,8 @@ namespace ft
 			typedef typename std::allocator<T>::const_reference	const_reference;
 			typedef typename std::allocator<T>::pointer			pointer;
 			typedef typename std::allocator<T>::const_pointer	const_pointer;
-			typedef vector_iterator<vector<T> >					iterator;
-			//typedef iterator							const_iterator;
+			typedef vector_iterator< vector<T> >					iterator;
 			//typedef iterator							reverse_iterator;
-			//typedef iterator							const_reverse_iterator;
 			typedef std::ptrdiff_t								difference_type;
 			typedef std::size_t									size_type;
 
@@ -180,7 +246,7 @@ namespace ft
 				try
 				{
 					_data = alloc.allocate(_alloc_size);
-					for (int i = 0; i < _size; i++)
+					for (unsigned long i = 0; i < _size; i++)
 						_data[i]= val;
 				}
 				catch(const std::exception& e)
@@ -208,7 +274,10 @@ namespace ft
 				}
 			}
 			vector(const vector& x);
-
+			~vector(void)
+			{
+				delete _data;
+			}
 			//iterator
 			iterator	begin(void)
 			{
@@ -219,7 +288,7 @@ namespace ft
 				return (iterator(_data + _size));
 			}
 
-		private:
+		protected:
 			pointer		_data;
 			size_type	_size;
 			size_type	_alloc_size;
