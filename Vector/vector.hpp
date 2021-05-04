@@ -134,11 +134,11 @@ namespace ft
 			pointer	_ptr;
 	};
 
-template <typename vector>
+	template <typename vector>
 	class reverse_vector_iterator : public vector_iterator<vector>
 	{
 		public:
-			typedef vector_iterator<vector>				vector_iterator;
+			typedef ft::vector_iterator<vector >				vector_iterator;
 			typedef typename vector::value_type			value_type;
 			typedef typename vector::pointer			pointer;
 			typedef typename vector::difference_type	difference_type;
@@ -209,8 +209,8 @@ template <typename vector>
 			typedef typename std::allocator<T>::const_reference	const_reference;
 			typedef typename std::allocator<T>::pointer			pointer;
 			typedef typename std::allocator<T>::const_pointer	const_pointer;
-			typedef vector_iterator< vector<T> >					iterator;
-			//typedef iterator							reverse_iterator;
+			typedef vector_iterator< vector<T> >				iterator;
+			typedef reverse_vector_iterator< vector<T> >		reverse_iterator;
 			typedef std::ptrdiff_t								difference_type;
 			typedef std::size_t									size_type;
 
@@ -278,7 +278,7 @@ template <typename vector>
 			{
 				delete _data;
 			}
-			//iterator
+			//iterators
 			iterator	begin(void)
 			{
 				return (iterator(_data));
@@ -288,6 +288,18 @@ template <typename vector>
 				return (iterator(_data + _size));
 			}
 
+			reverse_iterator	rbegin(void)
+			{
+				return (reverse_iterator(_data + _size - 1));
+			}
+			reverse_iterator	rend(void)
+			{
+				return(reverse_iterator(_data - 1));
+			}
+			//Capacity
+			//Element access
+			//Modifiers
+
 		protected:
 			pointer		_data;
 			size_type	_size;
@@ -295,6 +307,6 @@ template <typename vector>
 			allocator_type	alloc;
 	};
 }
-
+//non-member function overloads
 
 #endif
