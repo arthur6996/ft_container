@@ -6,7 +6,7 @@
 /*   By: abourbou <abourbou@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/08 17:37:15 by abourbou          #+#    #+#             */
-/*   Updated: 2021/05/06 16:40:57 by abourbou         ###   ########lyon.fr   */
+/*   Updated: 2021/05/06 17:32:50 by abourbou         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -271,7 +271,7 @@ namespace ft
 				_capacity = ALLOC_CAP(n);
 				try
 				{
-					_data = _alloc.allocate(_capacity);
+					_data = _allocate(_capacity);
 					for (int i = 0; i < _size; i++)
 						_data[i]= 0;
 				}
@@ -286,7 +286,7 @@ namespace ft
 				_capacity = ALLOC_CAP(n);
 				try
 				{
-					_data = _alloc.allocate(_capacity);
+					_data = _allocate(_capacity);
 					for (unsigned long i = 0; i < _size; i++)
 						_data[i]= val;
 				}
@@ -301,7 +301,7 @@ namespace ft
 				_capacity = _size;
 				try
 				{
-					_data = _alloc.allocate(_capacity);
+					_data = _allocate(_capacity);
 					int i = 0;
 					for (first; first != last; ++first)
 					{
@@ -362,7 +362,7 @@ namespace ft
 				}
 				else
 				{
-					pointer	_new_data = _alloc.allocate(ALLOC_CAP(n));
+					pointer	_new_data = _allocate(ALLOC_CAP(n));
 					size_type it = 0;
 					for (; it < _size; ++it)
 					{
@@ -394,7 +394,7 @@ namespace ft
 				}
 				else
 				{
-					pointer	_new_data = _alloc.allocate(ALLOC_CAP(n));
+					pointer	_new_data = _allocate(ALLOC_CAP(n));
 					size_type it = 0;
 					for (; it < _size; ++it)
 					{
@@ -414,10 +414,37 @@ namespace ft
 			//Modifiers
 
 		protected:
+		//exceptions
+			class	length_error: public std::exception
+			{
+				public:
+					virtual const char *what(void) const throw()
+					{
+						return ("length error");
+					}
+			};
+			class	out_of_range: public std::exception
+			{
+				public:
+					virtual const char *what(void) const throw()
+					{
+						return ("out of range");
+					}
+			};
+		//variables
 			pointer		_data;
 			size_type	_size;
 			size_type	_capacity;
 			allocator_type	_alloc;
+
+
+		private:
+			pointer		_allocate(size_type size)
+			{
+				if (size > this->max_size())
+					throw(length_error());
+				return (_alloc.allocate(size));
+			}
 	};
 }
 //non-member function overloads
