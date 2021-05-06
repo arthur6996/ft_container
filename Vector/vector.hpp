@@ -6,7 +6,7 @@
 /*   By: abourbou <abourbou@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/08 17:37:15 by abourbou          #+#    #+#             */
-/*   Updated: 2021/04/29 17:20:02 by abourbou         ###   ########lyon.fr   */
+/*   Updated: 2021/05/06 16:40:57 by abourbou         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,17 +41,17 @@ namespace ft
 			{}
 			~vector_iterator(void)
 			{}
-			vector_iterator&	operator=(vector_iterator& rhs)
+			vector_iterator&	operator=(const vector_iterator& rhs)
 			{
 				_ptr = rhs._ptr;
 				return (*this);
 			}
 			//
-			bool		operator==(vector_iterator other) const
+			bool		operator==(const vector_iterator other) const
 			{
 				return (_ptr == other._ptr);
 			}
-			bool		operator!=(vector_iterator other) const
+			bool		operator!=(const vector_iterator other) const
 			{
 				return (_ptr != other._ptr);
 			}
@@ -97,19 +97,19 @@ namespace ft
 				return (vector_iterator(_ptr - i));
 			}
 			//
-			bool			operator<(vector_iterator& rhs) const
+			bool			operator<(const vector_iterator& rhs) const
 			{
 				return (_ptr < rhs._ptr);
 			}
-			bool			operator>(vector_iterator& rhs) const
+			bool			operator>(const vector_iterator& rhs) const
 			{
 				return (_ptr > rhs._ptr);
 			}
-			bool			operator<=(vector_iterator& rhs) const
+			bool			operator<=(const vector_iterator& rhs) const
 			{
 				return (_ptr <= rhs._ptr);
 			}
-			bool			operator>=(vector_iterator& rhs) const
+			bool			operator>=(const vector_iterator& rhs) const
 			{
 				return (_ptr >= rhs._ptr);
 			}
@@ -138,7 +138,7 @@ namespace ft
 	class reverse_vector_iterator : public vector_iterator<vector>
 	{
 		public:
-			typedef ft::vector_iterator<vector >				vector_iterator;
+			typedef ft::vector_iterator<vector >		vector_iterator;
 			typedef typename vector::value_type			value_type;
 			typedef typename vector::pointer			pointer;
 			typedef typename vector::difference_type	difference_type;
@@ -152,6 +152,29 @@ namespace ft
 			{}
 			~reverse_vector_iterator(void)
 			{}
+			vector_iterator&	operator=(const vector_iterator& rhs)
+			{
+				this->_ptr = rhs._ptr;
+				return (*this);
+			}
+			//
+			bool		operator==(const reverse_vector_iterator other) const
+			{
+				return (this->_ptr == other._ptr);
+			}
+			bool		operator!=(const reverse_vector_iterator other) const
+			{
+				return (this->_ptr != other._ptr);
+			}
+			//
+ 			reference	operator*(void) const
+			{
+				return (*this->_ptr);
+			}
+			reference	operator->(void)
+			{
+				return (this->_ptr);
+			}
 			reverse_vector_iterator &operator++(void)
 			{
 				this->_ptr--;
@@ -182,6 +205,24 @@ namespace ft
 			{
 				return (reverse_vector_iterator(this->_ptr + i));
 			}
+			//
+			bool			operator<(const reverse_vector_iterator& rhs) const
+			{
+				return (this->_ptr > rhs._ptr);
+			}
+			bool			operator>(const reverse_vector_iterator& rhs) const
+			{
+				return (this->_ptr < rhs._ptr);
+			}
+			bool			operator<=(const reverse_vector_iterator& rhs) const
+			{
+				return (this->_ptr >= rhs._ptr);
+			}
+			bool			operator>=(const reverse_vector_iterator& rhs) const
+			{
+				return (this->_ptr <= rhs._ptr);
+			}
+			//
 			reverse_vector_iterator &operator+=(difference_type i)
 			{
 				this->_ptr -= i;
@@ -209,8 +250,8 @@ namespace ft
 			typedef typename std::allocator<T>::const_reference	const_reference;
 			typedef typename std::allocator<T>::pointer			pointer;
 			typedef typename std::allocator<T>::const_pointer	const_pointer;
-			typedef vector_iterator< vector<T> >				iterator;
-			typedef reverse_vector_iterator< vector<T> >		reverse_iterator;
+			typedef ft::vector_iterator< vector<T> >				iterator;
+			typedef ft::reverse_vector_iterator< vector<T> >		reverse_iterator;
 			typedef std::ptrdiff_t								difference_type;
 			typedef std::size_t									size_type;
 
@@ -222,15 +263,15 @@ namespace ft
 			{
 				_data = 0;
 				_size = 0;
-				_alloc_size = 0;
+				_capacity = 0;
 			}
 			vector(size_type n)
 			{
 				_size = n;
-				_alloc_size = n;
+				_capacity = ALLOC_CAP(n);
 				try
 				{
-					_data = alloc.allocate(_alloc_size);
+					_data = _alloc.allocate(_capacity);
 					for (int i = 0; i < _size; i++)
 						_data[i]= 0;
 				}
@@ -242,10 +283,10 @@ namespace ft
 			vector(size_type n, const value_type& val)
 			{
 				_size = n;
-				_alloc_size = n;
+				_capacity = ALLOC_CAP(n);
 				try
 				{
-					_data = alloc.allocate(_alloc_size);
+					_data = _alloc.allocate(_capacity);
 					for (unsigned long i = 0; i < _size; i++)
 						_data[i]= val;
 				}
@@ -257,10 +298,10 @@ namespace ft
 			vector(iterator first, iterator last)
 			{
 				_size = last - first;
-				_alloc_size = _size;
+				_capacity = _size;
 				try
 				{
-					_data = alloc.allocate(_alloc_size);
+					_data = _alloc.allocate(_capacity);
 					int i = 0;
 					for (first; first != last; ++first)
 					{
@@ -297,14 +338,86 @@ namespace ft
 				return(reverse_iterator(_data - 1));
 			}
 			//Capacity
+			size_type	size(void) const
+			{
+				return (_size);
+			}
+			size_type	max_size(void) const
+			{
+				return(_alloc.max_size());
+			}
+			void	resize(size_type n)
+			{
+				if (n <= _size)
+				{
+					_size = n;
+				}
+				else if (n <= _capacity)
+				{
+					for (size_type it = _size; it < n; ++it)
+					{
+						_data[it] = 0;
+					}
+					_size = n;
+				}
+				else
+				{
+					pointer	_new_data = _alloc.allocate(ALLOC_CAP(n));
+					size_type it = 0;
+					for (; it < _size; ++it)
+					{
+						_new_data[it] = _data[it];
+					}
+					for(; it < n; ++it)
+					{
+						_new_data[it] = 0;
+					}
+					_alloc.deallocate(_data, _capacity);
+					_data = _new_data;
+					_size = n;
+					_capacity = ALLOC_CAP(n);
+				}
+			}
+			void	resize(size_type n, value_type val)
+			{
+				if (n <= _size)
+				{
+					_size = n;
+				}
+				else if (n <= _capacity)
+				{
+					for (size_type it = _size; it < n; ++it)
+					{
+						_data[it] = val;
+					}
+					_size = n;
+				}
+				else
+				{
+					pointer	_new_data = _alloc.allocate(ALLOC_CAP(n));
+					size_type it = 0;
+					for (; it < _size; ++it)
+					{
+						_new_data[it] = _data[it];
+					}
+					for(; it < n; ++it)
+					{
+						_new_data[it] = val;
+					}
+					_alloc.deallocate(_data, _capacity);
+					_data = _new_data;
+					_size = n;
+					_capacity = ALLOC_CAP(n);
+				}
+			}
 			//Element access
 			//Modifiers
 
 		protected:
 			pointer		_data;
 			size_type	_size;
-			size_type	_alloc_size;
-			allocator_type	alloc;
+			size_type	_capacity;
+			allocator_type	_alloc;
 	};
 }
 //non-member function overloads
