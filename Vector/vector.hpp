@@ -135,6 +135,117 @@ namespace ft
 	};
 
 	template <typename vector>
+	class const_vector_iterator
+	{
+
+		public:
+			typedef typename vector::value_type			value_type;
+			typedef typename vector::difference_type	difference_type;
+			typedef typename vector::const_pointer		pointer;
+			typedef typename vector::const_reference	reference;
+			//
+			const_vector_iterator(void) : _ptr(0)
+			{}
+			const_vector_iterator(const const_vector_iterator &rhs) : _ptr(rhs._ptr)
+			{}
+			const_vector_iterator(pointer c_ptr) : _ptr(c_ptr)
+			{}
+			~const_vector_iterator(void)
+			{}
+			const_vector_iterator&	operator=(const const_vector_iterator& rhs)
+			{
+				_ptr = rhs._ptr;
+				return (*this);
+			}
+			//
+			bool		operator==(const const_vector_iterator other) const
+			{
+				return (_ptr == other._ptr);
+			}
+			bool		operator!=(const const_vector_iterator other) const
+			{
+				return (_ptr != other._ptr);
+			}
+			//
+ 			reference	operator*(void) const
+			{
+				return (*_ptr);
+			}
+			reference	operator->(void)
+			{
+				return (_ptr);
+			}
+			//
+			const_vector_iterator&	operator++(void)
+			{
+				_ptr++;
+				return (*this);
+			}
+			const_vector_iterator		operator++(int)
+			{
+				const_vector_iterator save = *this;
+				_ptr++;
+				return (save);
+			}
+			const_vector_iterator&	operator--(void)
+			{
+				_ptr--;
+				return (*this);
+			}
+			const_vector_iterator		operator--(int)
+			{
+				const_vector_iterator save = *this;
+				_ptr--;
+				return (save);
+			}
+			//
+			const_vector_iterator		operator+(difference_type i) const
+			{
+				return (const_vector_iterator(_ptr + i));
+			}
+			const_vector_iterator		operator-(difference_type i) const
+			{
+				return (const_vector_iterator(_ptr - i));
+			}
+			//
+			bool			operator<(const const_vector_iterator& rhs) const
+			{
+				return (_ptr < rhs._ptr);
+			}
+			bool			operator>(const const_vector_iterator& rhs) const
+			{
+				return (_ptr > rhs._ptr);
+			}
+			bool			operator<=(const const_vector_iterator& rhs) const
+			{
+				return (_ptr <= rhs._ptr);
+			}
+			bool			operator>=(const const_vector_iterator& rhs) const
+			{
+				return (_ptr >= rhs._ptr);
+			}
+			//
+			const_vector_iterator&	operator+=(difference_type i)
+			{
+				_ptr += i;
+				return(*this);
+			}
+			const_vector_iterator&	operator-=(difference_type i)
+			{
+				_ptr -= i;
+				return(*this);
+			}
+			//
+			reference	operator[](difference_type index) const
+			{
+				return (*(_ptr + index));
+			}
+
+		protected:
+			pointer	_ptr;
+	};
+
+	template <typename vector>
 	class reverse_vector_iterator : public vector_iterator<vector>
 	{
 		public:
@@ -152,7 +263,7 @@ namespace ft
 			{}
 			~reverse_vector_iterator(void)
 			{}
-			vector_iterator&	operator=(const vector_iterator& rhs)
+			reverse_vector_iterator&	operator=(const reverse_vector_iterator& rhs)
 			{
 				this->_ptr = rhs._ptr;
 				return (*this);
@@ -239,6 +350,111 @@ namespace ft
 			}
 	};
 
+	template <typename vector>
+	class const_reverse_vector_iterator : public const_vector_iterator<vector>
+	{
+		public:
+			typedef ft::const_vector_iterator<vector >		const_vector_iterator;
+			typedef typename vector::value_type			value_type;
+			typedef typename vector::const_pointer		pointer;
+			typedef typename vector::difference_type	difference_type;
+			typedef typename vector::const_reference	reference;
+			//
+			const_reverse_vector_iterator(void) : const_vector_iterator(0)
+			{}
+			const_reverse_vector_iterator(const const_reverse_vector_iterator &rhs) : const_vector_iterator(rhs._ptr)
+			{}
+			const_reverse_vector_iterator(pointer c_ptr) : const_vector_iterator(c_ptr)
+			{}
+			~const_reverse_vector_iterator(void)
+			{}
+			const_reverse_vector_iterator&	operator=(const const_reverse_vector_iterator& rhs)
+			{
+				this->_ptr = rhs._ptr;
+				return (*this);
+			}
+			//
+			bool		operator==(const const_reverse_vector_iterator other) const
+			{
+				return (this->_ptr == other._ptr);
+			}
+			bool		operator!=(const const_reverse_vector_iterator other) const
+			{
+				return (this->_ptr != other._ptr);
+			}
+			//
+ 			reference	operator*(void) const
+			{
+				return (*this->_ptr);
+			}
+			reference	operator->(void)
+			{
+				return (this->_ptr);
+			}
+			const_reverse_vector_iterator &operator++(void)
+			{
+				this->_ptr--;
+				return (*this);
+			}
+			const_reverse_vector_iterator operator++(int)
+			{
+				const_reverse_vector_iterator save(*this);
+				this->_ptr--;
+				return (save);
+			}
+			const_reverse_vector_iterator &operator--(void)
+			{
+				this->_ptr++;
+				return (*this);
+			}
+			const_reverse_vector_iterator operator--(int)
+			{
+				const_reverse_vector_iterator save(*this);
+				this->_ptr++;
+				return (save);
+			}
+			const_reverse_vector_iterator operator+(difference_type i) const
+			{
+				return (const_reverse_vector_iterator(this->_ptr - i));
+			}
+			const_reverse_vector_iterator operator-(difference_type i) const
+			{
+				return (const_reverse_vector_iterator(this->_ptr + i));
+			}
+			//
+			bool			operator<(const const_reverse_vector_iterator& rhs) const
+			{
+				return (this->_ptr > rhs._ptr);
+			}
+			bool			operator>(const const_reverse_vector_iterator& rhs) const
+			{
+				return (this->_ptr < rhs._ptr);
+			}
+			bool			operator<=(const const_reverse_vector_iterator& rhs) const
+			{
+				return (this->_ptr >= rhs._ptr);
+			}
+			bool			operator>=(const const_reverse_vector_iterator& rhs) const
+			{
+				return (this->_ptr <= rhs._ptr);
+			}
+			//
+			const_reverse_vector_iterator &operator+=(difference_type i)
+			{
+				this->_ptr -= i;
+				return (*this);
+			}
+			const_reverse_vector_iterator &operator-=(difference_type i)
+			{
+				this->_ptr += i;
+				return (*this);
+			}
+			const_reverse_vector_iterator &operator[](difference_type i) const
+			{
+				return (*(this->_ptr - i));
+			}
+	};
+
 	template <typename T>
 	class	vector
 	{
@@ -250,8 +466,10 @@ namespace ft
 			typedef typename std::allocator<T>::const_reference	const_reference;
 			typedef typename std::allocator<T>::pointer			pointer;
 			typedef typename std::allocator<T>::const_pointer	const_pointer;
-			typedef ft::vector_iterator< vector<T> >				iterator;
-			typedef ft::reverse_vector_iterator< vector<T> >		reverse_iterator;
+			typedef ft::vector_iterator< vector<T> >			iterator;
+			typedef ft::const_vector_iterator< vector<T> >		const_iterator;
+			typedef ft::reverse_vector_iterator< vector<T> >	reverse_iterator;
+			typedef ft::const_reverse_vector_iterator< vector<T> >	const_reverse_iterator;
 			typedef std::ptrdiff_t								difference_type;
 			typedef std::size_t									size_type;
 
@@ -328,6 +546,14 @@ namespace ft
 			{
 				return (iterator(_data + _size));
 			}
+			const_iterator	begin(void) const
+			{
+				return (const_iterator(_data));
+			}
+			const_iterator	end(void) const
+			{
+				return (const_iterator(_data + _size));
+			}
 
 			reverse_iterator	rbegin(void)
 			{
@@ -337,6 +563,16 @@ namespace ft
 			{
 				return(reverse_iterator(_data - 1));
 			}
+
+			const_reverse_iterator	rbegin(void) const
+			{
+				return(const_reverse_iterator(_data + _size - 1));
+			}
+			const_reverse_iterator	rend(void) const
+			{
+				return(const_reverse_iterator(_data - 1));
+			}
+
 			//Capacity
 			size_type	size(void) const
 			{
